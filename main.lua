@@ -7,5 +7,27 @@
 -- a more retro aesthetic
 -- https://github.com/Ulydev/push
 
-push = require 'push''
+push = require 'push'
+globais = require  'globais'
 
+function love.load()
+    
+    -- used to prevent blurring of text
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
+        fullscreen = false,
+        resizable = true,
+        vsync = true
+    })
+end
+
+function love.draw()
+    --begin push
+    push:apply('start')
+
+    love.graphics.printf('Hello Pong:', 0, VIRTUAL_HEIGHT/2 -6, VIRTUAL_WIDTH, 'center')
+
+    --end push
+    push:apply('end')
+end
