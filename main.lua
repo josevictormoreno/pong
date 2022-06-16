@@ -16,14 +16,23 @@ function love.load()
     -- used to prevent blurring of text
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
+    math.randomseed(os.time())
+
     textFont = love.graphics.newFont('font.ttf',8)
     scoreFont = love.graphics.newFont('font.ttf', 32)
 
     playerOne = 30
     playerTwo = VIRTUAL_HEIGHT - 50
+    ballX = VIRTUAL_WIDTH /2 -2
+    ballY = VIRTUAL_HEIGHT /2 -2
+
+    ballDX = math.random(2) == 1 and 100 or -100
+    ballDY = math.random(-50,50);
 
     playerOneScore = 0
     playerTwoScore = 0
+
+    gameState = 'start'
 
     love.window.setTitle('Pong')
 
@@ -35,26 +44,44 @@ function love.load()
 end
 
 function love.update(dt)
-    if love.keyboard.isDown('w') and playerOne > 0 and playerOne < VIRTUAL_HEIGHT -20 then
-        playerOne = playerOne - 200 * dt
+    if love.keyboard.isDown('w') then
+        playerOne = math.max(0, playerOne - 200 * dt)
 
     elseif love.keyboard.isDown('s') then
-        playerOne = playerOne + 200 * dt
+        playerOne = math.min(VIRTUAL_HEIGHT -20, playerOne + 200 * dt)
     end
 
     if love.keyboard.isDown('up') then
-        playerTwo = playerTwo - 200 * dt
+        playerTwo = math.max(0, playerTwo - 200 * dt)
 
     elseif love.keyboard.isDown('down') then
-        playerTwo = playerTwo + 200 * dt
-    end 
+        playerTwo = math.min(VIRTUAL_HEIGHT -20, playerTwo + 200 * dt)
+    end
+    
+    if gameState == 'play' then 
+        ballX = ballX + ballDX *dt
+        ballY = ballY + ballDY *dt
+    end
 
 end 
 
 function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
-    end 
+
+    elseif key == 'enter' or key == 'return' then
+        if gameState == 'start' then
+            gameState = 'play'
+        else 
+            gameState = 'start'
+
+            ballX = VIRTUAL_WIDTH/2 -2
+            ballY = VIRTUAL_HEIGHT/2 -2
+
+            ballDX = math.random(2) == 1 and 100 or -100
+            ballDY = math.random(-50, 50) * 1.5
+        end
+    end
 
 end
 
@@ -76,7 +103,8 @@ function love.draw()
     -- Draw the two rectangles for player one and two, and also the ball;
     love.graphics.rectangle('fill', 5, playerOne, 5, 20)
     love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, playerTwo, 5, 20)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH /2 -2, VIRTUAL_HEIGHT/2 -2,4,4)
+    --ball
+    love.graphics.rectangle('fill',ballX, ballY,4,4)
 
     --end push
     push:apply('end')
