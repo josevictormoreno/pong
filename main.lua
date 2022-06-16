@@ -9,7 +9,10 @@
 
 push = require 'push'
 globais = require  'globais'
+Class = require 'class'
 
+player = require 'Player'
+ball = require 'Ball'
  -- Runs in the first starts up, just once, to initialize the game
 function love.load()
     
