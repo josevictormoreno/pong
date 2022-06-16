@@ -18,8 +18,6 @@ function love.load()
 
     textFont = love.graphics.newFont('font.ttf',8)
     scoreFont = love.graphics.newFont('font.ttf', 32)
-    
-    love.graphics.setFont(textFont)
 
     playerOne = 30
     playerTwo = VIRTUAL_HEIGHT - 50
@@ -66,6 +64,7 @@ function love.draw()
     love.graphics.clear( 0, 0, 0, 255) 
 
     love.graphics.setFont(textFont)
+    love.graphics.setColor(0,255,0,255)
     love.graphics.printf('Hello Pong:', 0,  20, VIRTUAL_WIDTH, 'center')
 
     love.graphics.setFont(scoreFont)
@@ -73,7 +72,7 @@ function love.draw()
     love.graphics.print(tostring(playerOneScore), VIRTUAL_WIDTH/2+30, VIRTUAL_HEIGHT/3)
 
     -- Draw the two rectangles for player one and two, and also the ball;
-    love.graphics.rectangle('fill', 10, playerOne, 5, 20)
+    love.graphics.rectangle('fill', 5, playerOne, 5, 20)
     love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, playerTwo, 5, 20)
     love.graphics.rectangle('fill', VIRTUAL_WIDTH /2 -2, VIRTUAL_HEIGHT/2 -2,4,4)
 
