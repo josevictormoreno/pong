@@ -25,6 +25,8 @@ function love.load()
     playerOneScore = 0
     playerTwoScore = 0
 
+    love.window.setTitle('Pong')
+
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = true,
@@ -33,7 +35,7 @@ function love.load()
 end
 
 function love.update(dt)
-    if love.keyboard.isDown('w') then
+    if love.keyboard.isDown('w') and playerOne > 0 and playerOne < VIRTUAL_HEIGHT -20 then
         playerOne = playerOne - 200 * dt
 
     elseif love.keyboard.isDown('s') then
