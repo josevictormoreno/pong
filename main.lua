@@ -11,8 +11,8 @@ push = require 'push'
 globais = require  'globais'
 Class = require 'class'
 
-player = require 'Player'
-ball = require 'Ball'
+require 'Player'
+require 'Ball'
  -- Runs in the first starts up, just once, to initialize the game
 function love.load()
     
@@ -24,13 +24,10 @@ function love.load()
     textFont = love.graphics.newFont('font.ttf',8)
     scoreFont = love.graphics.newFont('font.ttf', 32)
 
-    playerOne = 30
-    playerTwo = VIRTUAL_HEIGHT - 50
-    ballX = VIRTUAL_WIDTH /2 -2
-    ballY = VIRTUAL_HEIGHT /2 -2
+    playerOne = Paddle(10, 30, 5, 20)
+    playerTwo = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
 
-    ballDX = math.random(2) == 1 and 100 or -100
-    ballDY = math.random(-50,50);
+    ball = Ball( VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT/ 2 - 2, 4, 4)
 
     playerOneScore = 0
     playerTwoScore = 0
@@ -48,7 +45,7 @@ end
 
 function love.update(dt)
     if love.keyboard.isDown('w') then
-        playerOne = math.max(0, playerOne - 200 * dt)
+        playerOne.position
 
     elseif love.keyboard.isDown('s') then
         playerOne = math.min(VIRTUAL_HEIGHT -20, playerOne + 200 * dt)
