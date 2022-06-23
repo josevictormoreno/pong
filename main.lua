@@ -114,7 +114,9 @@ function love.load()
     -- 2. 'serve' (waiting on a key press to serve the ball)
     -- 3. 'play' (the ball is in play, bouncing between paddles)
     -- 4. 'done' (the game is over, with a victor, ready for restart)
-    gameState = 'start'
+    gameState = 'setDifficult'
+    difficult = 'none'
+    intDifficult = 1
 end
 
 --[[
@@ -269,10 +271,18 @@ function love.keypressed(key)
     if key == 'escape' then
         -- the function LÖVE2D uses to quit the application
         love.event.quit()
+
+    elseif key == 'up' and intDifficult <3 and intDifficult > 0 and gameState == 'setDifficult' then
+        intDifficult = intDifficult + 1
+    
+    elseif key == 'down' and intDifficult <=3 and intDifficult > 1 and gameState == 'setDifficult' then
+        intDifficult = intDifficult - 1
     -- if we press enter during either the start or serve phase, it should
     -- transition to the next appropriate state
     elseif key == 'enter' or key == 'return' then
-        if gameState == 'start' then
+        if gameState == 'setDifficult' then
+            gameState = 'start' 
+        elseif gameState == 'start' then
             gameState = 'serve'
         elseif gameState == 'serve' then
             gameState = 'play'
@@ -306,12 +316,18 @@ function love.draw()
     push:start()
 
     love.graphics.clear(0, 0, 0, 255)
+    if gameState == 'setDifficult' then
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Welcome to Pong!', 0, VIRTUAL_HEIGHT/4-20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Set the Difficult!', 0, VIRTUAL_HEIGHT/4-10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Difficult '..tostring(intDifficult), 0, VIRTUAL_HEIGHT/4, VIRTUAL_WIDTH, 'center')
+
+    end
     
     -- render different things depending on which part of the game we're in
     if gameState == 'start' then
         -- UI messages
         love.graphics.setFont(smallFont)
-        love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
     elseif gameState == 'serve' then
         -- UI messages
