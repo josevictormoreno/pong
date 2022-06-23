@@ -91,15 +91,15 @@ function love.load()
 
     -- initialize our player paddles; make them global so that they can be
     -- detected by other functions and modules
-    player1 = Paddle(10, 30, 5, 20)
-    player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
+    playerOne = Paddle(10, 30, 5, 20)
+    playerTwo = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
 
     -- place a ball in the middle of the screen
     ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
     -- initialize score variables
-    player1Score = 0
-    player2Score = 0
+    playerOneScore = 0
+    playerTwoScore = 0
 
     -- either going to be 1 or 2; whomever is scored on gets to serve the
     -- following turn
@@ -151,9 +151,9 @@ function love.update(dt)
         -- detect ball collision with paddles, reversing dx if true and
         -- slightly increasing it, then altering the dy based on the position
         -- at which it collided, then playing a sound effect
-        if ball:collides(player1) then
+        if ball:collides(playerOne) then
             ball.dx = -ball.dx * 1.03
-            ball.x = player1.x + 5
+            ball.x = playerOne.x + 5
 
             -- keep velocity going in the same direction, but randomize it
             if ball.dy < 0 then
@@ -164,9 +164,9 @@ function love.update(dt)
 
             sounds['paddle_hit']:play()
         end
-        if ball:collides(player2) then
+        if ball:collides(playerTwo) then
             ball.dx = -ball.dx * 1.03
-            ball.x = player2.x - 4
+            ball.x = playerTwo.x - 4
 
             -- keep velocity going in the same direction, but randomize it
             if ball.dy < 0 then
@@ -197,12 +197,12 @@ function love.update(dt)
         -- and update the score and serving player
         if ball.x < 0 then
             servingPlayer = 1
-            player2Score = player2Score + 1
+            playerTwoScore = playerTwoScore + 1
             sounds['score']:play()
 
             -- if we've reached a score of 10, the game is over; set the
             -- state to done so we can show the victory message
-            if player2Score == 10 then
+            if playerTwoScore == 10 then
                 winningPlayer = 2
                 gameState = 'done'
             else
@@ -214,10 +214,10 @@ function love.update(dt)
 
         if ball.x > VIRTUAL_WIDTH then
             servingPlayer = 2
-            player1Score = player1Score + 1
+            playerOneScore = playerOneScore + 1
             sounds['score']:play()
 
-            if player1Score == 10 then
+            if playerOneScore == 10 then
                 winningPlayer = 1
                 gameState = 'done'
             else
@@ -232,21 +232,21 @@ function love.update(dt)
     --
     -- player 1
     if gameState =='play' then
-        if player1.y > ball.y and ball.x < VIRTUAL_WIDTH/2 then
-            player1.dy = -PADDLE_SPEED
-        elseif player1.y < ball.y and ball.x < VIRTUAL_WIDTH/2 then
-            player1.dy = PADDLE_SPEED
+        if love.keyboard.isDown('up') then
+            playerOne.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('down') then
+            playerOne.dy = PADDLE_SPEED
         else
-            player1.dy = 0
+            playerOne.dy = 0
         end
 
         -- player 2
-        if player2.y > ball.y and ball.x > VIRTUAL_WIDTH/2 then
-            player2.dy = -PADDLE_SPEED
-        elseif player2.y < ball.y and ball.x > VIRTUAL_WIDTH/2 then
-            player2.dy = PADDLE_SPEED
+        if playerTwo.y > ball.y and ball.x > VIRTUAL_WIDTH/intDifficult then
+            playerTwo.dy = -PADDLE_SPEED
+        elseif playerTwo.y < ball.y and ball.x > VIRTUAL_WIDTH/intDifficult then
+            playerTwo.dy = PADDLE_SPEED
         else
-            player2.dy = 0
+            playerTwo.dy = 0
         end
     end
 
@@ -256,8 +256,8 @@ function love.update(dt)
         ball:update(dt)
     end
 
-    player1:update(dt, ball.y)
-    player2:update(dt, ball.y)
+    playerOne:update(dt, ball.y)
+    playerTwo:update(dt, ball.y)
 end
 
 --[[
@@ -282,6 +282,11 @@ function love.keypressed(key)
     elseif key == 'enter' or key == 'return' then
         if gameState == 'setDifficult' then
             gameState = 'start' 
+            if intDifficult == 3 then
+                intDifficult = 4
+            elseif intDifficult == 1 then 
+                intDifficult = 1.5
+            end
         elseif gameState == 'start' then
             gameState = 'serve'
         elseif gameState == 'serve' then
@@ -294,8 +299,8 @@ function love.keypressed(key)
             ball:reset()
 
             -- reset scores to 0
-            player1Score = 0
-            player2Score = 0
+            playerOneScore = 0
+            playerTwoScore = 0
 
             -- decide serving player as the opposite of who won
             if winningPlayer == 1 then
@@ -349,8 +354,8 @@ function love.draw()
     -- show the score before ball is rendered so it can move over the text
     displayScore()
     
-    player1:render()
-    player2:render()
+    playerOne:render()
+    playerTwo:render()
     ball:render()
 
     -- display FPS for debugging; simply comment out to remove
@@ -366,9 +371,9 @@ end
 function displayScore()
     -- score display
     love.graphics.setFont(scoreFont)
-    love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50,
+    love.graphics.print(tostring(playerOneScore), VIRTUAL_WIDTH / 2 - 50,
         VIRTUAL_HEIGHT / 3)
-    love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30,
+    love.graphics.print(tostring(playerTwoScore), VIRTUAL_WIDTH / 2 + 30,
         VIRTUAL_HEIGHT / 3)
 end
 
